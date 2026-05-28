@@ -1,0 +1,33 @@
+---
+title: "Draft Project Report"
+author: "Jaren Figueiredo & Austin Muelrath"
+format:
+    pdf:
+        code-fold: true
+jupyter: python3
+fig-format: png
+---
+
+## Abstract
+
+The Volitility Index, or VIX, has for decades been used as a gauge for market volatility; it is colloquially known as the "fear index," for it is quite correlated with fear in the financial markets.
+
+![Figure 1: VIX price since 1993](images/paste-2.png)
+
+The VIX is inversely correlated with the broader market returns: when the market goes up, the VIX tends to fall. Conversely, when the market sharply downturns, the VIX tends to shoot up, hence the term "VIX spike." Looking at the plot above, you see VIX spikes during time of macroeconomic instability: The 2008 Financial Crisis, COVID in 2020, Tariff uncertainty in 2025, among other things.
+
+![Figure 2: Standardized VIX and S&P500 returns since 1993](images/paste-1.png){fig-align="center"}
+
+## Data Cleaning & EDA
+
+![Figure 3: ACF and PACF for VIX (Level) and VIX (Log Transformed)](images/ACFandPPACF.png){fig-align="center"}
+
+## Feature Engineering & Selection
+
+## SARIMAX Model
+
+## RNN Model
+
+## Preliminary Comparisons
+
+## Early Conclusions
