@@ -16,15 +16,17 @@ fig-format: png
 
 The Volatility Index, or VIX, has for decades been used as a gauge for market volatility; it is colloquially known as the "fear index," because it is strongly connected to fear in the financial markets. It measures the 30-day implied volatility of SPX options, where SPX is the S&P 500 index.
 
-![Figure 1: VIX price since 1993](images/paste-2.png){fig-align="center" width="500"}
+![VIX price since 1993](images/paste-2.png){fig-align="center" width="500"}
 
 The VIX is inversely correlated with the broader market returns (`r=-.71`, `p<.001` between 1993 and 2026 for monthly returns): when the market goes up, the VIX tends to fall. Conversely, when the market sharply downturns, the VIX tends to shoot up, hence the term "VIX spike." Looking at the plot above, you see VIX spikes during times of macroeconomic instability: The 2008 Financial Crisis, COVID in 2020, tariff uncertainty in 2025, among other things. Looking at the plot below illustrates the contrast between the VIX and the S&P 500, visually indicating that the monthly S&P 500 returns tend to oppose monthly VIX returns.
 
-![Figure 2: Standardized VIX and S&P500 returns since 1993](images/paste-1.png){fig-align="center" width="500"}
+![Standardized VIX and S&P500 returns since 1993](images/paste-1.png){fig-align="center" width="500"}
 
 We will use the following data for our analysis: 1. Reddit comments from r/wallstreetbets, analyzed for sentiment using roBERTa, an NLP model. 2. S&P 500 daily returns. 3. Geopolitical Risk Index data, which tracks the frequency of adverse geopolitical events as reported in 10 large newspapers. Using this data, **we will predict daily VIX log returns**.
 
-![Figure 3: ACF and PACF for VIX (Level) and VIX (Log Transformed)](images/AcfPacf.png){fig-align="center" width="500"}
+For the Reddit sentiment feature, raw r/wallstreetbets comments were scored with roBERTa and then aggregated to a daily table. The resulting sentiment file contains one row per `created_date`, with `final_score` representing the daily sentiment signal and `score` representing the average Reddit comment score for that date. We convert `created_date` to a date field, merge the daily sentiment data with market and GPR observations by date, drop dates where the merged modeling inputs are unavailable, and lag `final_score` by one trading day before using it in the RNN so the model does not use same-day sentiment to predict the same day's VIX close.
+
+![ACF and PACF for VIX (Level) and VIX (Log Transformed)](images/AcfPacf.png){fig-align="center" width="500"}
 
 Figure 3 shows the autocorrelation (left) and partial autocorrelation (right) of the VIX and VIX log returns. The figure indicates that the VIX is dependent on the days that come before it, especially the previous day.  However, the log returns show much weaker evidence of autocorrelation.
 
@@ -534,15 +536,15 @@ The model predicts one day at a time from a 20-day lookback window. Each fold fi
 
 The RNN's mean log-return RMSE is `0.0872`, with mean MAE `0.0653` and mean directional accuracy `0.5015`. This is directionally close to a coin flip and worse than the zero-return and train-mean baselines on RMSE within the RNN notebook's 10-fold setup. When converted back to VIX prices, the one-day anchored price RMSE is `2.1703`, while the recursive price path is unstable because small log-return errors compound over the full prediction path.
 
-![Figure 4: Keras GRU fold-level walk-forward predictions](images/rnn_walk_forward_folds.png){fig-align="center" width="650"}
+![Keras GRU fold-level walk-forward predictions](images/rnn_walk_forward_folds.png){fig-align="center" width="650"}
 
 Figure 4 shows the fold-level walk-forward forecasts from the RNN notebook. The model generally produces smoother forecasts than the realized VIX log returns, which helps explain why it struggles with spike magnitude even when it sometimes tracks the broad direction.
 
-![Figure 5: Keras GRU actual versus predicted VIX log returns](images/rnn_log_return_predictions.png){fig-align="center" width="650"}
+![Keras GRU actual versus predicted VIX log returns](images/rnn_log_return_predictions.png){fig-align="center" width="650"}
 
 Figure 5 pools the RNN predictions across the walk-forward folds. The predicted series is visibly less volatile than the actual VIX log-return series, reinforcing the numeric result that the model does not yet outperform simple centered-return baselines.
 
-![Figure 6: Keras GRU training and validation loss by fold](images/rnn_train_validation_loss.png){fig-align="center" width="650"}
+![Keras GRU training and validation loss by fold](images/rnn_train_validation_loss.png){fig-align="center" width="650"}
 
 Figure 6 shows the GRU's training and validation losses across folds. The validation loss often flattens or rises quickly while training loss continues improving, which suggests the current RNN specification is prone to overfitting rather than learning a stable out-of-sample volatility signal.
 
