@@ -8,9 +8,9 @@ jupyter: python3
 fig-format: png
 ---
 
-## Abstract
+## Abstract and EDA
 
-The Volitility Index, or VIX, has for decades been used as a gauge for market volatility; it is colloquially known as the "fear index," for it is quite correlated with fear in the financial markets.
+The Volitility Index, or VIX, has for decades been used as a gauge for market volatility; it is colloquially known as the "fear index," for it is quite correlated with fear in the financial markets. It measures the 30-day implied volatility of SPX options, where SPX is an S&P 500 tracking ETF.
 
 ![Figure 1: VIX price since 1993](images/paste-2.png)
 
